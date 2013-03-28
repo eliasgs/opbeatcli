@@ -1,5 +1,6 @@
 from opbeatcli.conf.defaults import CLIENT_ID
 from opbeatcli.utils.ssh_config import SSHConfig
+from opbeatcli.modprobes import release
 
 import pkg_resources
 from pip.vcs import vcs
@@ -210,5 +211,17 @@ def run(logger, include_paths, directory, module_name):
 	# Versions are returned as a dict of "module":"version"
 	# We convert it here. Just ditch the keys.
 	list_versions = [v for k, v in versions.items()]
-	return list_versions
+
+	# Quick fix for the new modprobes structure	
+	releases = []
+	for ver in list_versions:
+		mod = Module(ver['module']['name'])
+		vcs = Vcs(
+			ver['vcs']['type'],
+			ver['vcs']['revision'],
+			ver['vcs']['repository'],
+			vcs['vcs']['branch'])
+		releases.append(Release(mod, ver['version'], vcs))
+
+	return releases
 

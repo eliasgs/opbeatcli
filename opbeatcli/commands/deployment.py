@@ -11,8 +11,22 @@ import os
 
 def send_deployment_info(client, logger, hostname, include_paths=None, directory=None, module_name=None):
 
-	versions = probe.all(logger, include_paths, directory, module_name)
-	
+	releases = probe.all(logger, include_paths, directory, module_name)
+	versions = []
+	for rel in releases:
+		version = {'module': {'name': rel.module.name}}
+
+		if rel.version:
+			version['version'] = rel.version
+		if rel.vcs:
+			version['vcs'] = {
+				'type': rel.vcs.vcs_type,
+				'revision': rel.vcs.revision,
+				'repository': rel.vcs.repository,
+				'branch': rel.vcs.branch}
+
+		versions.append(version)
+
 	data = {'machines': [{'hostname': hostname}], 'releases': versions}
 	
 	url = client.server + (defaults.DEPLOYMENT_API_PATH.format(client.organization_id, client.app_id))
