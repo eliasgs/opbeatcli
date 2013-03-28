@@ -7,8 +7,8 @@ import argparse
 
 from datetime import datetime, timedelta
 
-from opbeatcli.commands.deployment import (annotate_url_with_ssh_config_info,
-											get_default_module_name, DeploymentCommand)
+from opbeatcli.modprobes.pip_probe import (annotate_url_with_ssh_config_info, get_default_module_name)
+from opbeatcli.commands.deployment import DeploymentCommand
 from opbeatcli.client import Client
 
 logger = logging.getLogger('opbeatcli.tests')
@@ -79,7 +79,7 @@ class TestDeployment(unittest.TestCase):
 		pass
 
 
-	@mock.patch('opbeatcli.commands.deployment.get_ssh_config')
+	@mock.patch('opbeatcli.modprobes.pip_probe.get_ssh_config')
 	def test_pass_through_no_config(self, get_ssh_config):
 		get_ssh_config.return_value = None
 		pass_through_url = "git@github.com:opbeat/opbeatcli.git"
@@ -88,7 +88,7 @@ class TestDeployment(unittest.TestCase):
 
 		self.assertEqual(pass_through_url,actual_url)
 
-	@mock.patch('opbeatcli.commands.deployment.get_ssh_config')
+	@mock.patch('opbeatcli.modprobes.pip_probe.get_ssh_config')
 	def test_pass_through(self, get_ssh_config):
 		get_ssh_config.return_value = MockSshConfig()
 		pass_through_url = "git@github.com:opbeat/opbeatcli.git"
@@ -97,7 +97,7 @@ class TestDeployment(unittest.TestCase):
 
 		self.assertEqual(pass_through_url,actual_url)
 
-	@mock.patch('opbeatcli.commands.deployment.get_ssh_config')
+	@mock.patch('opbeatcli.modprobes.pip_probe.get_ssh_config')
 	def test_annotate(self, get_ssh_config):
 		get_ssh_config.return_value = MockSshConfig()
 
@@ -106,7 +106,7 @@ class TestDeployment(unittest.TestCase):
 
 		self.assertEqual('git@github.com:opbeat/opbeat_python.git',actual_url)
 
-	@mock.patch('opbeatcli.commands.deployment.get_ssh_config')
+	@mock.patch('opbeatcli.modprobes.pip_probe.get_ssh_config')
 	def test_annotate_mercurial(self, get_ssh_config):
 		get_ssh_config.return_value = MockSshConfig()
 
@@ -115,7 +115,7 @@ class TestDeployment(unittest.TestCase):
 
 		self.assertEqual('ssh://hg@github.com/username/reponame/',actual_url)
 	
-	@mock.patch('opbeatcli.commands.deployment.get_ssh_config')
+	@mock.patch('opbeatcli.modprobes.pip_probe.get_ssh_config')
 	def test_annotate_readonly_url(self, get_ssh_config):
 		get_ssh_config.return_value = MockSshConfig()
 
@@ -124,7 +124,7 @@ class TestDeployment(unittest.TestCase):
 
 		self.assertEqual('git://github.com/roncohen/django-hstore.git',actual_url)
 	
-	@mock.patch('opbeatcli.commands.deployment.get_ssh_config')
+	@mock.patch('opbeatcli.modprobes.pip_probe.get_ssh_config')
 	def test_pass_through_http(self, get_ssh_config):
 		get_ssh_config.return_value = MockSshConfig()
 
