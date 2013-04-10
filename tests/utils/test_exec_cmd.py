@@ -7,8 +7,8 @@ class TestExecCmd(unittest.TestCase):
         # Check if empty
         self.assertEqual(next(output, None), None)
     def test_error(self):
-        with self.assertRaises(OSError):
-            exec_cmd('this_is_not_a_valid_command')
+        output = exec_cmd('this_is_not_a_valid_command')
+        self.assertEqual(next(output, None), None)
     def test_invalid(self):
         output = exec_cmd('ls this_is_not_a_file')
         self.assertEqual(next(output, None), None)
