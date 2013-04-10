@@ -16,12 +16,12 @@ class MockPopen(object):
 
 class TestGemProbe(unittest.TestCase):
     # should return an empty list the gem is not installed
-    # @mock.patch('opbeatcli.modprobes.dpkg_probe.exec_cmd')
-    # def test_dpkg_not_installed(self, exec_cmd):
-    #     exec_cmd.return_value = []
-    #     
-    #     releases = dpkg_probe.run()
-    #     self.assertEqual(releases, [])
+    @mock.patch('opbeatcli.modprobes.dpkg_probe.exec_cmd')
+    def test_dpkg_not_installed(self, exec_cmd):
+        exec_cmd.return_value = []
+        
+        releases = dpkg_probe.run()
+        self.assertEqual(releases, [])
 
     # should return an empty list if there are no gems installed
     @mock.patch('subprocess.Popen')
