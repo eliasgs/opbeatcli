@@ -1,6 +1,7 @@
 import subprocess
 import re
 from opbeatcli.modprobes import release
+from opbeatcli.modprobes.release import (Module, Release)
 
 def run():
 	releases = []
