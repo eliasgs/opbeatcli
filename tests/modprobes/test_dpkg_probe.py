@@ -14,29 +14,35 @@ class MockPopen(object):
         return self
 
 
-class TestGemProbe(unittest.TestCase):
-    # should return an empty list the gem is not installed
+class TestDebianProbe(unittest.TestCase):
     @mock.patch('opbeatcli.modprobes.dpkg_probe.exec_cmd')
     def test_dpkg_not_installed(self, exec_cmd):
+        """
+        Should return an empty list if not on dpkg system
+        """
         exec_cmd.return_value = []
         
         releases = dpkg_probe.run()
         self.assertEqual(releases, [])
 
-    # should return an empty list if there are no gems installed
     @mock.patch('subprocess.Popen')
     def test_no_packages_installed(self, Popen):
+        """
+        Should return an empty list if there are no packages installed
+        """
         Popen.return_value = MockPopen().empty_result()
 
         releases = dpkg_probe.run()
         self.assertEqual(releases, [])
 
-    # should return a list of installed gems
     @mock.patch('subprocess.Popen')
     def test_installed_packages_as_list(self, Popen):
+        """
+        Should return a list of installed packages
+        """
         Popen.return_value = MockPopen().valid_result()
 
-        # see fixtures/gem_probe
+        # see fixtures/dpkg_probe
         expected = [
             Release(Module('accountsservice'), '0.6.15-2ubuntu9'),
             Release(Module('adduser'), '3.113ubuntu2'),
