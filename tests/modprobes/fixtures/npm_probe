@@ -1,0 +1,6 @@
+/usr/local/lib
+├── express@3.0.4 (max depth reached)
+├── mocha@1.5.0 (max depth reached)
+├── nodemon@0.6.9 (max depth reached)
+└── npm@1.1.49 (max depth reached)
+
