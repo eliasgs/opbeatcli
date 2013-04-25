@@ -9,6 +9,6 @@ def run():
     for line in output:
         if line != '' and not re.match('^[*]', line):
             pkg = re.split('\s|[()]', line)
-            mod = Module(name=pkg[0])
+            mod = Module(name=pkg[0], module_type='gem')
             releases.append(Release(mod, version=pkg[2]))
     return releases

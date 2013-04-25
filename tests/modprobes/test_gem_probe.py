@@ -10,7 +10,8 @@ class MockPopen(object):
         self.stdout = os.fdopen(os.open('/dev/null', os.O_RDONLY))
         return self
     def valid_result(self):
-        self.stdout = os.fdopen(os.open('tests/modprobes/fixtures/gem_probe', os.O_RDONLY))
+        self.stdout = os.fdopen(os.open('tests/modprobes/fixtures/gem_probe',
+                                os.O_RDONLY))
         return self
 
 
@@ -44,11 +45,21 @@ class TestGemProbe(unittest.TestCase):
 
         # see fixtures/gem_probe
         expected = [
-            Release(Module('chunky_png'), '1.2.8'),
-            Release(Module('compass'), '0.12.2'),
-            Release(Module('fssm'), '0.2.10'),
-            Release(Module('sass'), '3.2.7')]
+            Release(Module('chunky_png', 'gem'), '1.2.8'),
+            Release(Module('compass', 'gem'), '0.12.2'),
+            Release(Module('fssm', 'gem'), '0.2.10'),
+            Release(Module('sass', 'gem'), '3.2.7')]
 
         releases = gem_probe.run()
         self.assertEqual(releases, expected)
 
+    @mock.patch('subprocess.Popen')
+    def test_module_type(self, Popen):
+        """
+        Should send the proper module_type
+        """
+        Popen.return_value = MockPopen().valid_result()
+
+        releases = gem_probe.run()
+        for release in releases:
+            self.assertEqual(release.module.module_type, 'gem')
