@@ -42,7 +42,6 @@ class TestNpmProbe(unittest.TestCase):
         releases = npm_probe.run()
         self.assertEqual(releases, [])
 
-    # 
     @mock.patch('subprocess.Popen')
     def test_installed_modules_as_list(self, Popen):
         """
@@ -52,10 +51,10 @@ class TestNpmProbe(unittest.TestCase):
 
         # see fixtures/npm_probe 
         expected = [
-            Release(Module('express'), '3.0.4'),
-            Release(Module('mocha'), '1.5.0'),
-            Release(Module('nodemon'), '0.6.9'),
-            Release(Module('npm'), '1.1.49')]
+            Release(Module('express', 'npm'), '3.0.4'),
+            Release(Module('mocha', 'npm'), '1.5.0'),
+            Release(Module('nodemon', 'npm'), '0.6.9'),
+            Release(Module('npm', 'npm'), '1.1.49')]
 
         # should reappear as both local and global modules are probed
         expected += expected
@@ -64,3 +63,13 @@ class TestNpmProbe(unittest.TestCase):
 
         self.assertEqual(releases, expected)
 
+    @mock.patch('subprocess.Popen')
+    def test_module_type(self, Popen):
+        """
+        Should send the proper module_type
+        """
+        Popen.side_effect = self.valid_result
+
+        releases = npm_probe.run()
+        for release in releases:
+            self.assertEqual(release.module.module_type, 'npm')

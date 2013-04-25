@@ -11,7 +11,7 @@ def to_releases(output):
         if re.match('.*@', line):
             pkg = re.split('\s+', line)
             pkg = re.split('@', pkg[1])
-            mod = Module(name=pkg[0])
+            mod = Module(name=pkg[0], module_type='npm')
             releases.append(Release(mod, version=pkg[1]))
 
     return releases
