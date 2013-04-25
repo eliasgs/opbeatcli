@@ -1,6 +1,7 @@
 class Module(object):
-    def __init__(self, name):
+    def __init__(self, name, module_type='egg'):
         self.name = name
+        self.module_type = module_type
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__

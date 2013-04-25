@@ -10,7 +10,8 @@ class MockPopen(object):
         self.stdout = os.fdopen(os.open('/dev/null', os.O_RDONLY))
         return self
     def valid_result(self):
-        self.stdout = os.fdopen(os.open('tests/modprobes/fixtures/dpkg_probe', os.O_RDONLY))
+        self.stdout = os.fdopen(os.open('tests/modprobes/fixtures/dpkg_probe',
+                                os.O_RDONLY))
         return self
 
 
@@ -44,11 +45,21 @@ class TestDebianProbe(unittest.TestCase):
 
         # see fixtures/dpkg_probe
         expected = [
-            Release(Module('accountsservice'), '0.6.15-2ubuntu9'),
-            Release(Module('adduser'), '3.113ubuntu2'),
-            Release(Module('apparmor'), '2.7.102-0ubuntu3'),
-            Release(Module('apt'), '0.8.16~exp12ubuntu10')]
+            Release(Module('accountsservice', 'deb'), '0.6.15-2ubuntu9'),
+            Release(Module('adduser', 'deb'), '3.113ubuntu2'),
+            Release(Module('apparmor', 'deb'), '2.7.102-0ubuntu3'),
+            Release(Module('apt', 'deb'), '0.8.16~exp12ubuntu10')]
 
         releases = dpkg_probe.run()
         self.assertEqual(releases, expected)
 
+    @mock.patch('subprocess.Popen')
+    def test_module_type(self, Popen):
+        """
+        Should send the proper module_type
+        """
+        Popen.return_value = MockPopen().valid_result()
+
+        releases = dpkg_probe.run()
+        for release in releases:
+            self.assertEqual(release.module.module_type, 'deb')

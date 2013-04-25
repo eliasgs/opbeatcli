@@ -11,6 +11,6 @@ def run():
         pkg = re.split('\s{2,}', line)
         # if package is installed append to result
         if pkg[0] == 'ii': 
-            mod = Module(name=pkg[1])
+            mod = Module(name=pkg[1], module_type='deb')
             releases.append(Release(mod, version=pkg[2]))
     return releases
