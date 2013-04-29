@@ -27,6 +27,29 @@ class FakeArgs(object):
 			setattr(self, k, v)
 
 class TestRun(unittest.TestCase):
+	@mock.patch("opbeatcli.runner.Client.send")
+	def test_module_type(self, send):
+		parser = argparse.ArgumentParser(description="Dummy parser")
+		subparse = parser.add_subparsers()
+
+		cmd = DeploymentCommand(subparse)
+
+		args = FakeArgs(**{
+			'organization_id': 'org_id',
+			'app_id': 'app_id',
+			'secret_token': 'token',
+			'server': 'server',
+			'dry_run': 'dry_run',
+			'module_name': 'module_name',
+			'directory': 'directory',
+			'hostname': 'hostname',
+			'include_paths': 'include_paths'
+		})
+
+		cmd.run_first(args, logger)
+		for rel in send.call_args[1]['data']['releases']:
+			self.assertTrue('type' in rel['module'], rel)
+
 	@mock.patch("opbeatcli.commands.deployment.send_deployment_info")
 	def test_run(self, send_deployment_info):
 		parser = argparse.ArgumentParser(

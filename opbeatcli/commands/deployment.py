@@ -14,7 +14,10 @@ def send_deployment_info(client, logger, hostname, include_paths=None, directory
     releases = probe.all(logger, include_paths, directory, module_name)
     versions = []
     for rel in releases:
-        version = {'module': {'name': rel.module.name}}
+        version = {
+            'module': {
+                'name': rel.module.name,
+                'type': rel.module.module_type}}
 
         if rel.version:
             version['version'] = rel.version
@@ -28,7 +31,7 @@ def send_deployment_info(client, logger, hostname, include_paths=None, directory
         versions.append(version)
 
     data = {'machines': [{'hostname': hostname}], 'releases': versions}
-    
+
     url = client.server + (defaults.DEPLOYMENT_API_PATH.format(client.organization_id, client.app_id))
 
     return client.send(url=url, data=data)
